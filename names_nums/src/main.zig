@@ -22,8 +22,8 @@ pub fn main() !void {
     a_var += 1;
     printInfo("a_var", a_var);
 
-    comptime var b_var = 2;
-    printInfo("b_var", b_var);
+    //comptime var b_var = 2;
+    //printInfo("b_var", b_var);
     // both have to be initialized with a value.
     // const b_const;
     // var c_var: u8;
@@ -32,10 +32,6 @@ pub fn main() !void {
     printInfo("d_var", d_var);
     d_var = 42;
     printInfo("d_var", d_var);
-
-    var e_var: u8 = 42;
-    //As a work arround, you can use the underscore special name to ignore something
-    _ = e_var;
 
     // Integers
     // u-8bit, u-16bit, u-32bit, u-64bit, u-128bit, u-sizebit
@@ -48,7 +44,7 @@ pub fn main() !void {
     _ = 0o777; //octal
     _ = 0b1111_0101_0111; //binary
 
-    var f_var: u1 = 0;
+    const f_var: u1 = 0;
     _ = f_var;
 
     //Floating point

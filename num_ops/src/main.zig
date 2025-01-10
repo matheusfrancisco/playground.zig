@@ -41,7 +41,7 @@ pub fn main() !void {
     _ = 32 | 2; //or
     _ = 32 & 1; //and
     _ = 32 ^ 0; //xor
-    var one_bit: u8 = 0b0000_0001;
+    const one_bit: u8 = 0b0000_0001;
     _ = ~one_bit; //not
 
     // Comparison
@@ -55,7 +55,7 @@ pub fn main() !void {
     //Type coerce when it's safe.
     const byte: u8 = 200;
     const word: u16 = 999;
-    var dword: u32 = byte + word;
+    const dword: u32 = byte + word;
     std.debug.print("dword: {}\n", .{dword});
 
     const word_2: u16 = @intCast(dword);
