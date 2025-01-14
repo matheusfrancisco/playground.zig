@@ -5,6 +5,22 @@ pub fn main() !void {
     const f: bool = false;
 
     std.debug.print("t: {}, f: {}\n", .{ t, f });
+
+    var maybe_byte: ?u8 = null;
+    var maybe: ?bool = null;
+    std.debug.print("maybe: {?},maybe_byte: {?}\n", .{ maybe_byte, maybe });
+
+    maybe = true;
+    maybe_byte = 3;
+    std.debug.print("maybe: {?},maybe_byte: {?}\n", .{ maybe_byte, maybe });
+
+    if (t) {
+        std.debug.print("t is true\n", .{});
+    } else if (f) {
+        std.debug.print("f is true\n", .{});
+    } else {
+        std.debug.print("t and f are false\n", .{});
+    }
 }
 
 test "simple test" {
