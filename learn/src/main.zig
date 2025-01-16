@@ -1,7 +1,54 @@
 const std = @import("std");
 const u = @import("models/user.zig");
+const l = @import("loops.zig");
 
-pub fn main() !void {
+const Number = union {
+    int: i32,
+    float: f32,
+    nan: void,
+};
+
+const TimestampType = enum {
+    unix,
+    datetime,
+};
+// we could have let zig create an implicit enum for us
+// const Timestamp = union(enum) {
+const Timestamp = union(TimestampType) {
+    unix: i32,
+    datetime: DateTime,
+
+    const DateTime = struct {
+        year: u16,
+        month: u8,
+        day: u8,
+        hour: u8,
+        minute: u8,
+        second: u8,
+    };
+
+    fn seconds(self: Timestamp) u16 {
+        switch (self) {
+            .datetime => |dt| return dt.second,
+            .unix => |ts| {
+                const seconds_since_midnight: i32 = @rem(ts, 86400);
+                return @intCast(@rem(seconds_since_midnight, 60));
+            },
+        }
+    }
+};
+
+const OpenError = error{
+    AccessDenied,
+    NotFount,
+};
+
+pub fn main() OpenError!void {
+    try l.runner("hello, world \\n");
+
+    const n = Number{ .int = 32 };
+    std.debug.print("number {d}\n", .{n.int});
+
     const user = u.User{ .power = 9001, .name = "Goku" };
     const user2 = u.User.init("Vegeta", 9000);
 
@@ -66,6 +113,84 @@ pub fn main() !void {
 
     // This line is more advanced, and is not going to get explained!
     std.debug.print("{any}\n", .{std.mem.asBytes(&ab).*});
+
+    //control flow
+    //you can if else like
+    const i = if (1 > 2) true else false;
+    _ = i;
+
+    // break has another interesting behavior, return a value from a block
+    const p = blk: {
+        if (1 > 2) break :blk 42;
+        if (3 > 2) break :blk 2;
+    };
+    std.debug.print("{d}", .{p});
+
+    //optional
+    var home: ?[]const u8 = null;
+    home = "home";
+    const h = home orelse "work";
+    _ = h;
+    // undefined
+    var p1: i32 = undefined;
+    p1 = 42;
+    //action(req, res) catch |err| switch (err) {
+    //	error.BrokenPipe, error.ConnectionResetByPeer) => return,
+    //	error.BodyTooBig => {
+    //		res.status = 431;
+    //		res.body = "Request body is too big";
+    //	},
+    //	else => {
+    //		res.status = 500;
+    //		res.body = "Internal Server Error";
+    //	}
+    //};
+}
+
+fn indexOf(haystack: []const u32, needle: u32) ?usize {
+    for (haystack, 0..) |value, i| {
+        if (needle == value) {
+            return i;
+        }
+    }
+    return null;
+}
+
+fn anniversaryName(years_married: u16) []const u8 {
+    switch (years_married) {
+        1 => return "paper",
+        2 => return "cotton",
+        3 => return "leather",
+        4 => return "flower",
+        5 => return "wood",
+        6 => return "sugar",
+    }
+}
+
+fn arrivalTimeDesc(minutes: u16, is_late: bool) []const u8 {
+    switch (minutes) {
+        0 => return "arrived",
+        1, 2 => return "soon",
+        3...5 => return "no more than 5 minutes",
+        else => {
+            if (!is_late) {
+                return "sorry, it'll be a while";
+            }
+            // todo, something is very wrong
+            return "never";
+        },
+    }
+}
+
+pub fn eql(comptime T: type, a: []const T, b: []const T) bool {
+    // if they arent' the same length, the can't be equal
+    if (a.len != b.len) return false;
+
+    for (a, b) |a_elem, b_elem| {
+        if (a_elem != b_elem) return false;
+    }
+
+    return true;
 }
 
 fn add(a: i64, b: i64) i64 {
