@@ -1,6 +1,7 @@
 const std = @import("std");
 const u = @import("models/user.zig");
 const l = @import("loops.zig");
+const pt = @import("pointers.zig");
 
 const Number = union {
     int: i32,
@@ -45,6 +46,7 @@ const OpenError = error{
 
 pub fn main() OpenError!void {
     try l.runner("hello, world \\n");
+    try pt.pointers();
 
     const n = Number{ .int = 32 };
     std.debug.print("number {d}\n", .{n.int});
