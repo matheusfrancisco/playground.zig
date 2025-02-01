@@ -1,7 +1,7 @@
 const std = @import("std");
 
+const stdout = std.io.getStdOut().writer();
 pub fn main() !void {
-    const stdout = std.io.getStdOut().writer();
     try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
     const num: u8 = 100;
@@ -54,14 +54,12 @@ pub fn main() !void {
     if (xk == 123 and y == 124) {
         try stdout.print("hey\n", .{});
     }
-
-    //string
-
 }
 
 pub fn strings() !void {
-    // strings literal
-
+    // strings
+    const bytes = [_]u8{ 0x48, 0x65, 0x6C, 0x6C, 0x6F };
+    try stdout.print("{s}\n", .{bytes});
 }
 
 test "simple test" {
