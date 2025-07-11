@@ -64,4 +64,10 @@ pub fn main() !void {
     std.debug.print("h_ptr: {?}, type of h_ptr: {}\n", .{ h_ptr, @TypeOf(h_ptr) });
     std.debug.print("h_ptr size: {}, *usize size: {}", .{ @sizeOf(@TypeOf(h_ptr)), @sizeOf(*usize) });
     //there is also  [*c] but that is only transitioning from c
+    //
+    const stdout = std.io.getStdOut().writer();
+    const num: ?i32 = 5;
+    if (num) |not_null_num| {
+        try stdout.print("{d}\n", .{not_null_num});
+    }
 }
