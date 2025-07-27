@@ -1,7 +1,10 @@
 const std = @import("std");
 const _ = @import("hashmap.zig");
+const e = @import("error.zig");
 
 pub fn main() !void {
+    try e.errors_test();
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     var list = std.ArrayList(u8).init(gpa.allocator());
