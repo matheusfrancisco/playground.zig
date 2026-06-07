@@ -1,0 +1,10 @@
+--- exercises/001_hello.zig	2026-01-04 14:04:52.752848018 +0100
++++ answers/001_hello.zig	2026-01-04 14:04:54.209877278 +0100
+@@ -16,6 +16,6 @@
+ //
+ const std = @import("std");
+ 
+-fn main() void {
++pub fn main() void {
+     std.debug.print("Hello world!\n", .{});
+ }

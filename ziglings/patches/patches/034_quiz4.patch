@@ -1,0 +1,11 @@
+--- exercises/034_quiz4.zig	2026-01-09 22:45:53.115325559 +0100
++++ answers/034_quiz4.zig	2026-01-09 22:45:15.658578603 +0100
+@@ -14,7 +14,7 @@
+     var stdout_writer = std.Io.File.stdout().writer(io, &.{});
+     const stdout = &stdout_writer.interface;
+ 
+-    const my_num: u32 = getNumber();
++    const my_num: u32 = try getNumber();
+ 
+     try stdout.print("my_num={}\n", .{my_num});
+ }

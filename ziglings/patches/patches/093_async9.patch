@@ -1,0 +1,15 @@
+--- exercises/093_async9.zig	2026-04-14 22:20:23.519107582 +0200
++++ answers/093_async9.zig	2026-04-14 22:06:30.606912044 +0200
+@@ -63,10 +63,10 @@
+ 
+     // Launch two workers, each searching half the array.
+     // Remember, we want them to be guaranteed separate units of concurrency.
+-    var f1 = ???(searchThreshold, .{ io, data[0..mid], threshold, 0, 0, &queue });
++    var f1 = try io.concurrent(searchThreshold, .{ io, data[0..mid], threshold, 0, 0, &queue });
+     defer _ = f1.cancel(io);
+ 
+-    var f2 = ???(searchThreshold, .{ io, data[mid..], threshold, mid, 1, &queue });
++    var f2 = try io.concurrent(searchThreshold, .{ io, data[mid..], threshold, mid, 1, &queue });
+     defer _ = f2.cancel(io);
+ 
+     // Wait for the first result.

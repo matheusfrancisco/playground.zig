@@ -1,0 +1,13 @@
+--- exercises/094_async10.zig	2026-04-06 19:36:59.873966580 +0200
++++ answers/094_async10.zig	2026-04-06 19:37:12.416216872 +0200
+@@ -51,8 +51,8 @@
+ 
+     // Protect this section from cancellation.
+     // What method swaps the cancel protection state?
+-    const old = io.???(.blocked);
+-    defer _ = io.???(old);
++    const old = io.swapCancelProtection(.blocked);
++    defer _ = io.swapCancelProtection(old);
+ 
+     // This sleep will NOT return error.Canceled even though
+     // we get canceled during it — protection is active!

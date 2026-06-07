@@ -1,0 +1,17 @@
+--- exercises/075_quiz8.zig	2026-05-04 15:51:48.254371574 +0200
++++ answers/075_quiz8.zig	2026-05-04 15:49:28.426445382 +0200
+@@ -48,7 +48,13 @@
+ // instead.
+ //
+ // Please fill in the body of this function!
+-fn makePath(from: *Place, to: *Place, dist: u8) Path {}
++fn makePath(from: *Place, to: *Place, dist: u8) Path {
++    return Path{
++        .from = from,
++        .to = to,
++        .dist = dist,
++    };
++}
+ 
+ // Using our new function, these path definitions take up considerably less
+ // space in our program now!

@@ -1,0 +1,17 @@
+--- exercises/005_arrays2.zig	2026-05-04 16:26:32.778330847 +0200
++++ answers/005_arrays2.zig	2026-05-04 16:26:13.082917974 +0200
+@@ -21,12 +21,12 @@
+     // (Problem 1)
+     // Please set this array concatenating the two arrays above.
+     // It should result in: 1 3 3 7
+-    const leet = ???;
++    const leet = le ++ et;
+ 
+     // (Problem 2)
+     // Please set this array using repetition.
+     // It should result in: 1 0 0 1 1 0 0 1 1 0 0 1
+-    const bit_pattern_unit = [_]u8{ ??? };
++    const bit_pattern_unit = [_]u8{ 1, 0, 0, 1 };
+     const bit_pattern: [3 * bit_pattern_unit.len]u8 = @bitCast(@as([3][bit_pattern_unit.len]u8, @splat(bit_pattern_unit)));
+ 
+     // Okay, that's all of the problems. Let's see the results.

@@ -1,0 +1,18 @@
+--- exercises/105_testing.zig	2026-03-20 19:23:48.873150100 +0100
++++ answers/105_testing.zig	2026-04-02 10:51:15.805831538 +0200
+@@ -71,7 +71,7 @@
+ // The corresponding test is not much different from the previous one. Except
+ // that it contains an error that you need to correct.
+ test "sub" {
+-    try testing.expect(sub(10, 5) == 6);
++    try testing.expect(sub(10, 5) == 5);
+ 
+     try testing.expect(sub(3, 1.5) == 1.5);
+ }
+@@ -92,5 +92,5 @@
+ 
+     // Now we test if the function returns an error if we pass a zero as
+     // denominator. But which error needs to be tested?
+-    try testing.expectError(error.???, divide(15, 0));
++    try testing.expectError(error.DivisionByZero, divide(15, 0));
+ }

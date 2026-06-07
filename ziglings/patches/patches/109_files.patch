@@ -1,0 +1,20 @@
+--- exercises/109_files.zig	2026-03-20 19:23:48.874150121 +0100
++++ answers/109_files.zig	2026-04-02 10:51:15.813831695 +0200
+@@ -41,7 +41,7 @@
+         // by doing nothing
+         //
+         // we want to catch error.PathAlreadyExists and do nothing
+-        ??? => {},
++        error.PathAlreadyExists => {},
+         // if there's any other unexpected error we just propagate it through
+         else => return e,
+     };
+@@ -61,7 +61,7 @@
+     // but here we are not yet done writing to the file
+     // if only there were a keyword in Zig that
+     // allowed you to "defer" code execution to the end of the scope...
+-    file.close(io);
++    defer file.close(io);
+ 
+     // you are not allowed to move these lines above the file closing line!
+     var file_writer = file.writer(io, &.{});

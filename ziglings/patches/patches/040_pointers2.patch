@@ -1,0 +1,11 @@
+--- exercises/040_pointers2.zig	2026-05-22 21:57:28.601255748 +0200
++++ answers/040_pointers2.zig	2026-05-22 21:57:27.672235943 +0200
+@@ -23,7 +23,7 @@
+ 
+ pub fn main() void {
+     const a: u8 = 12;
+-    const b: *u8 = &a; // fix this!
++    const b: *const u8 = &a; // fix this!
+ 
+     std.debug.print("a: {}, b: {}\n", .{ a, b.* });
+ }

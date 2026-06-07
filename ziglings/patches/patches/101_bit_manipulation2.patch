@@ -1,0 +1,9 @@
+--- exercises/101_bit_manipulation2.zig	2025-08-15 15:17:57.839348063 +0200
++++ answers/101_bit_manipulation2.zig	2026-04-02 10:51:15.797831382 +0200
+@@ -60,5 +60,5 @@
+     // and if so, we know the given string is a pangram
+     //
+     // but what do we have to compare?
+-    return bits == 0x..???;
++    return bits == 0x3ffffff;
+ }

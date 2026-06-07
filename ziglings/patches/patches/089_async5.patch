@@ -1,0 +1,11 @@
+--- exercises/089_async5.zig	2026-04-06 14:38:54.443726849 +0200
++++ answers/089_async5.zig	2026-04-06 14:38:39.945438309 +0200
+@@ -46,7 +46,7 @@
+ 
+     // We don't want to wait 10 seconds!
+     // Which Future method requests cancellation AND returns the result?
+-    const result = future.???(io);
++    const result = future.cancel(io);
+ 
+     print("Task returned: {}\n", .{result});
+ }

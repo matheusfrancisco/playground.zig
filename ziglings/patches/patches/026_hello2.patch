@@ -1,0 +1,9 @@
+--- exercises/026_hello2.zig	2026-01-09 22:51:45.803358789 +0100
++++ answers/026_hello2.zig	2026-01-09 22:50:46.016166527 +0100
+@@ -28,5 +28,5 @@
+     // to be able to pass it up as a return value of main().
+     //
+     // We just learned of a single statement which can accomplish this.
+-    stdout.print("Hello world!\n", .{});
++    try stdout.print("Hello world!\n", .{});
+ }

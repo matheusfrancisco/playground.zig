@@ -1,0 +1,11 @@
+--- exercises/085_async.zig	2026-04-04 16:01:01.509555724 +0200
++++ answers/085_async.zig	2026-04-04 16:00:58.541495688 +0200
+@@ -38,7 +38,7 @@
+ const std = @import("std");
+ 
+ pub fn main(init: std.process.Init) !void {
+-    const io = init.???;
++    const io = init.io;
+ 
+     // Get the current wall-clock time using the Io interface.
+     // Hint: Timestamp.now() takes an Io and a Clock type (.real = wall clock).

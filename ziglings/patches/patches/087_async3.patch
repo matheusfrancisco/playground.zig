@@ -1,0 +1,11 @@
+--- exercises/087_async3.zig	2026-04-05 16:12:48.317265515 +0200
++++ answers/087_async3.zig	2026-04-05 16:12:52.269343030 +0200
+@@ -28,7 +28,7 @@
+     // Launch both tasks asynchronously.
+     var future_a = io.async(slowAdd, .{ 1, 2 });
+     defer _ = future_a.cancel(io);
+-    var future_b = ???(slowMul, .{ 6, 7 });
++    var future_b = io.async(slowMul, .{ 6, 7 });
+     defer _ = future_b.cancel(io);
+ 
+     // Await both results.

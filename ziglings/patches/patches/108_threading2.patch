@@ -1,0 +1,13 @@
+--- exercises/108_threading2.zig	2026-04-14 06:44:18.848246237 +0200
++++ answers/108_threading2.zig	2026-04-14 08:15:30.894485037 +0200
+@@ -81,8 +81,8 @@
+         defer handle1.join();
+ 
+         // Second thread to calculate the minus numbers.
+-        ???
+-        
++        const handle2 = try std.Thread.spawn(.{}, thread_pi, .{ &pi_minus, 3, count });
++        defer handle2.join();
+     }
+     // Here we add up the results.
+     std.debug.print("PI ≈ {d:.8}\n", .{4 + pi_plus - pi_minus});

@@ -1,0 +1,31 @@
+--- exercises/058_quiz7.zig	2026-05-04 16:34:31.692458399 +0200
++++ answers/058_quiz7.zig	2026-05-04 16:34:29.239406323 +0200
+@@ -192,8 +192,8 @@
+             // Oops! The hermit forgot how to capture the union values
+             // in a switch statement. Please capture each value as
+             // 'p' so the print statements work!
+-            .place => print("{s}", .{p.name}),
+-            .path => print("--{}->", .{p.dist}),
++            .place => |p| print("{s}", .{p.name}),
++            .path => |p| print("--{}->", .{p.dist}),
+         }
+     }
+ };
+@@ -254,7 +254,7 @@
+             // dereference and optional value "unwrapping" look
+             // together. Remember that you return the address with the
+             // "&" operator.
+-            if (place == entry.*.?.place) return entry;
++            if (place == entry.*.?.place) return &entry.*.?;
+             // Try to make your answer this long:__________;
+         }
+         return null;
+@@ -308,7 +308,7 @@
+     //
+     // Looks like the hermit forgot something in the return value of
+     // this function. What could that be?
+-    fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) void {
++    fn getTripTo(self: *HermitsNotebook, trip: []?TripItem, dest: *Place) TripError!void {
+         // We start at the destination entry.
+         const destination_entry = self.getEntry(dest);
+ 

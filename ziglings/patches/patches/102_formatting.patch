@@ -1,0 +1,11 @@
+--- exercises/102_formatting.zig	2026-03-20 19:23:48.873150100 +0100
++++ answers/102_formatting.zig	2026-04-02 10:51:15.799831421 +0200
+@@ -131,7 +131,7 @@
+         for (0..size) |b| {
+             // What formatting is needed here to make our columns
+             // nice and straight?
+-            print("{???} ", .{(a + 1) * (b + 1)});
++            print("{d:>3} ", .{(a + 1) * (b + 1)});
+         }
+ 
+         // After each row we use double line feed:

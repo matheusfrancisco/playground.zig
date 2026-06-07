@@ -1,0 +1,11 @@
+--- exercises/092_async8.zig	2026-04-02 10:49:27.925721496 +0200
++++ answers/092_async8.zig	2026-04-02 10:49:31.694795212 +0200
+@@ -43,7 +43,7 @@
+     // Send numbers 1 through 10 into the queue.
+     for (1..11) |i| {
+         // What Queue method sends a single element, blocking if full?
+-        queue.???(io, @intCast(i)) catch return;
++        queue.putOne(io, @intCast(i)) catch return;
+     }
+     // Signal that we're done sending.
+     queue.close(io);
