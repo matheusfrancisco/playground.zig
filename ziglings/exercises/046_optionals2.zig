@@ -5,6 +5,7 @@
 // linked to the first elephant. This is because we had NO CONCEPT
 // of a tail that didn't point to another elephant!
 //
+//
 // We also introduce the handy `.?` shortcut:
 //
 //     const foo = bar.?;
@@ -22,7 +23,7 @@ const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
-    tail: *Elephant = null, // Hmm... tail needs something...
+    tail: ?*Elephant = null, // Hmm... tail needs something...
     visited: bool = false,
 };
 
@@ -37,8 +38,8 @@ pub fn main() void {
 
     // `linkElephants` will stop the program if you try and link an
     // elephant that doesn't exist! Uncomment and see what happens.
-    // const missingElephant: ?*Elephant = null;
-    // linkElephants(&elephantC, missingElephant);
+    //const missingElephant: ?*Elephant = null;
+    //linkElephants(&elephantC, missingElephant);
 
     visitElephants(&elephantA);
 
@@ -66,6 +67,6 @@ fn visitElephants(first_elephant: *Elephant) void {
 
         // HINT: We want something similar to what `.?` does,
         // but instead of ending the program, we want to exit the loop...
-        e = e.tail ???
+        e = e.tail orelse break;
     }
 }
