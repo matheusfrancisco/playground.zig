@@ -70,7 +70,7 @@ pub fn main() void {
     //
     // The fix for this is very subtle, but it makes a big
     // difference!
-    const Type2 = narcissus.fetchTheMostBeautifulType();
+    const Type2 = Narcissus.fetchTheMostBeautifulType();
 
     // Now we print a pithy statement about Narcissus.
     print("A {s} loves all {s}es. ", .{
