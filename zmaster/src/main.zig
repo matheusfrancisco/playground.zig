@@ -1,12 +1,16 @@
 const std = @import("std");
 const Io = std.Io;
 const print = std.debug.print;
+const Trie = @import("Trie.zig");
+const heap = std.heap;
+const mem = std.mem;
 
 const zmaster = @import("zmaster");
 const Point = @import("Point.zig");
 const protocol = @import("protocol.zig");
 const u = @import("uniontag.zig");
 const a = @import("alloc.zig");
+const stack = @import("stack.zig");
 
 //const Point = struct {
 //    x: i32,
@@ -81,7 +85,69 @@ const Sp = packed struct {
     c: u2 = 0,
 };
 
-pub fn main(_: std.process.Init) !void {
+pub fn mytrie(init: std.process.Init) !void {
+    const io = init.io; // 0.16: Io instance for clocks/files
+    var gpa = heap.DebugAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    // Alice in Wonderland text embedded as a static
+    // string directly in the binary.
+    const corpus = @embedFile("alice.txt");
+
+    // We split on space, skipping empty fields.
+    var iter = mem.tokenizeScalar(u8, corpus, ' ');
+
+    // Initialize the Trie and ensure its cleanup.
+    var trie = Trie.init(allocator);
+    defer trie.deinit();
+
+    // A preliminary test.
+    try trie.insert("caterpillar");
+    try trie.insert("category");
+    print("caterpillar: {} | ", .{trie.lookup("caterpillar")});
+    print("category: {} | ", .{trie.lookup("category")});
+    print("cat: {}\n\n", .{trie.lookup("cat")});
+
+    // Some counters.
+    var words: usize = 0;
+    var found: usize = 0;
+
+    // Prepare a timer to see how long these ops take.
+    const t_start = std.Io.Clock.awake.now(io); // 0.16: Timer is gone; use Io.Clock
+
+    // Insertions.
+    while (iter.next()) |word| {
+        try trie.insert(word);
+        words += 1;
+    }
+
+    // Reset the iterator.
+    iter.index = 0;
+
+    // Now lookups.
+    while (iter.next()) |word| {
+        if (trie.lookup(word)) found += 1;
+    }
+
+    // Print summary stats. Note multi-line literal for format.
+    // 0.16: Io.Duration has a format method — print it with {f}.
+    print(
+        \\words:    {}
+        \\found:    {}
+        \\took:     {f}
+        \\
+    , .{
+        words,
+        found,
+        t_start.durationTo(std.Io.Clock.awake.now(io)),
+    });
+}
+pub fn main(i: std.process.Init) !void {
+    try mytrie(i);
+    if (true) return;
+    try stack.run();
+    if (true) return;
     u.bare();
     print("\n", .{});
     try a.alloc();
