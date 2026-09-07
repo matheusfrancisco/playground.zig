@@ -5,11 +5,12 @@ const Trie = @import("Trie.zig");
 const heap = std.heap;
 const mem = std.mem;
 
+const simd = @import("simd.zig");
 const zmaster = @import("zmaster");
 const Point = @import("Point.zig");
 const protocol = @import("protocol.zig");
 const u = @import("uniontag.zig");
-const a = @import("alloc.zig");
+const al = @import("alloc.zig");
 const stack = @import("stack.zig");
 const ts = @import("to_string_tagged.zig");
 const tp = @import("to_string_ptr.zig");
@@ -151,13 +152,138 @@ fn typeNameLength(comptime T: type) usize {
     return name.len;
 }
 
+const Foo = struct {
+    a: i32,
+    b: i64,
+    c: i32,
+};
 fn printStringer(s: tp.Stringer) !void {
     var buf: [256]u8 = undefined;
     const str = try s.toString(&buf);
     std.debug.print("{s}\n", .{str});
 }
+fn work(id: usize) void {
+    std.debug.print("Thread {} is working\n", .{id});
+    // Simulate some work with a sleep
+    //    std.time.sleep(1 * std.time.second);
+    std.debug.print("Thread {} has finished working\n", .{id});
+}
 
-pub fn main(i: std.process.Init) !void {
+fn work2(io: Io, i: usize) void {
+    _ = io;
+    std.debug.print("job {d}\n", .{i});
+}
+pub fn main(init: std.process.Init) !void {
+
+    //bit about threads
+
+    const cpus = try std.Thread.getCpuCount();
+    // no thread
+    //    for (0..cpus) |id| {
+    //        work(id);
+    //    }
+    //
+
+    //var handles: [14]std.Thread = undefined;
+    //for (0..cpus) |id| {
+    //    handles[id] = try std.Thread.spawn(.{}, work, .{id});
+    //}
+
+    //// this wait until it finish
+    //for (handles) |handle| {
+    //    handle.join();
+    //}
+    //
+    //this leave the main thread
+    //not wait to finish
+    for (0..cpus) |id| {
+        var handle = try std.Thread.spawn(.{}, work, .{id});
+        handle.detach();
+    }
+
+    const clock = std.Io.Clock.awake;
+
+    try std.Io.sleep(init.io, std.Io.Duration.fromMicroseconds(1001), clock);
+    // but we dont have guarantee that the threads will finish before the main thread exits, so we sleep for a while to let them finish
+    //
+
+    const io = init.io;
+
+    var group: std.Io.Group = .init;
+    defer group.cancel(io);
+    for (0..cpus) |id| {
+        group.async(io, work2, .{ io, id });
+        group.async(io, work, .{id});
+    }
+
+    try group.await(io);
+
+    if (true) return;
+    var gpa = heap.DebugAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    //multi
+    var multi = std.MultiArrayList(Foo){};
+    defer multi.deinit(allocator);
+
+    try multi.append(allocator, .{ .a = 1, .b = 2, .c = 3 });
+    // pre allocate to add more items;
+    try multi.ensureUnusedCapacity(allocator, 2);
+
+    multi.appendAssumeCapacity(.{ .a = 3, .b = 2, .c = 3 });
+    multi.appendAssumeCapacity(.{ .a = 3, .b = 3, .c = 3 });
+
+    std.debug.print(".a: {any}\n", .{multi.items(.a)});
+    std.debug.print(".b: {any}\n", .{multi.items(.b)});
+    std.debug.print(".c: {any}\n\n", .{multi.items(.c)});
+    // If you will be accessing more than one field, it's
+    // better to get the slice of all fields first, and then
+    // call `items` on that. This provides better performance.
+    //
+    const sliced = multi.slice();
+    const a_fields = sliced.items(.a);
+    const b_fields = sliced.items(.b);
+    const c_fields = sliced.items(.c);
+    std.debug.print("first .a = {}\n", .{a_fields[0]});
+    std.debug.print("second .b = {}\n", .{b_fields[1]});
+    std.debug.print("third .c = {}\n\n", .{c_fields[2]});
+    // And that's one way to iterate over a field for all items.
+    for (a_fields, 0..) |a, i| std.debug.print("{}: .a = {}\n", .{ i, a });
+    for (b_fields, 0..) |b, i| std.debug.print("{}: .b = {}\n", .{ i, b });
+    for (c_fields, 0..) |c, i| std.debug.print("{}: .c = {}\n", .{ i, c });
+
+    //you ca get an index in the list.
+    const first_foo = multi.get(0);
+    std.debug.print("first foo: {any}\n", .{first_foo});
+    // You can set an item at an index in the list.
+    // This overwrites the existing item at that index.
+    multi.set(1, .{ .a = 4, .b = 4, .c = 4 });
+
+    // As with `ArrayList` you can use `MultiArrayList` as a stack.
+    const head = multi.pop();
+    std.debug.print("head: {any}\n", .{head});
+    try multi.append(allocator, .{ .a = 5, .b = 5, .c = 5 }); // push
+    // `popOrNull` to use the list as an iterator with `while`.
+    var i: usize = 0;
+
+    while (multi.pop()) |item| : (i += 1)
+        std.debug.print("items[{}]: {any}\n", .{ i, item });
+
+    std.debug.print("\n", .{});
+
+    // Beware! If the list structure is modified, the previously
+    // obtained slices are invalidated. This may occur when appending
+    // or removing / popping items.
+    std.debug.print("a_fields.len: {}\n", .{a_fields.len});
+    std.debug.print("b_fields.len: {}\n", .{b_fields.len});
+    std.debug.print("c_fields.len: {}\n", .{c_fields.len});
+    std.debug.print("list len: {}\n", .{multi.items(.a).len});
+    if (true) return;
+    try simd.simd();
+
+    if (true) return;
+
     //const bob = ts.Stringer{ .user = ts.User{
     //    .name = "Bob",
     //    .email = "a@b.com",
@@ -203,13 +329,13 @@ pub fn main(i: std.process.Init) !void {
     std.debug.print("Sum of type name lengths: {}\n", .{sum});
 
     if (true) return;
-    try mytrie(i);
+    try mytrie(init);
     if (true) return;
     try stack.run();
     if (true) return;
     u.bare();
     print("\n", .{});
-    try a.alloc();
+    try al.alloc();
     if (true) return;
 
     const s = S{};
