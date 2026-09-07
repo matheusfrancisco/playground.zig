@@ -11,6 +11,8 @@ const protocol = @import("protocol.zig");
 const u = @import("uniontag.zig");
 const a = @import("alloc.zig");
 const stack = @import("stack.zig");
+const ts = @import("to_string_tagged.zig");
+const tp = @import("to_string_ptr.zig");
 
 //const Point = struct {
 //    x: i32,
@@ -143,7 +145,64 @@ pub fn mytrie(init: std.process.Init) !void {
         t_start.durationTo(std.Io.Clock.awake.now(io)),
     });
 }
+
+fn typeNameLength(comptime T: type) usize {
+    const name = @typeName(T);
+    return name.len;
+}
+
+fn printStringer(s: tp.Stringer) !void {
+    var buf: [256]u8 = undefined;
+    const str = try s.toString(&buf);
+    std.debug.print("{s}\n", .{str});
+}
+
 pub fn main(i: std.process.Init) !void {
+    //const bob = ts.Stringer{ .user = ts.User{
+    //    .name = "Bob",
+    //    .email = "a@b.com",
+    //} };
+
+    //try printStringer(bob);
+
+    //const donald = ts.Stringer{ .animal = ts.Animal{
+    //    .name = "Donald",
+    //    .greeting = "Quack!",
+    //} };
+
+    //try printStringer(donald);
+    // Pointer cast interface.
+    var bob = tp.User{
+        .name = "Bob",
+        .email = "bob@example.com",
+    };
+    const bob_impl = bob.stringer();
+    try printStringer(bob_impl);
+
+    var donald = tp.Animal{
+        .name = "Donald Duck",
+        .greeting = "Quack!",
+    };
+    const donald_impl = donald.stringer();
+    try printStringer(donald_impl);
+    if (true) return;
+
+    const numss = [_]i32{ 2, 4, 6 };
+    var sum: usize = 0;
+
+    inline for (numss) |n| {
+        const T = switch (n) {
+            2 => f32,
+            4 => i8,
+            6 => bool,
+            else => unreachable,
+        };
+        sum += typeNameLength(T);
+    }
+
+    std.debug.print("Sum of type name lengths: {}\n", .{sum});
+
+    if (true) return;
     try mytrie(i);
     if (true) return;
     try stack.run();
